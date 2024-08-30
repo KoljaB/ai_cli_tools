@@ -99,8 +99,8 @@ The **RVC** command synthesizes text into speech in real-time.
 C:\Dev\Test\ai-cli-tools>rvc "Let me hear this"
 Let me hear this
 
-C:\Dev\Test\ai-cli-tools>echo hey there | llm "answer bold" | rvc
-[Speaks the bold-formatted answer]
+C:\Dev\Test\ai-cli-tools>echo hey there | llm "answer short" | rvc
+[Speaks the short answer]
 
 C:\Dev\Test\ai-cli-tools>llm "give me a short tip for learning french" | rvc
 [Speaks a French learning tip]
