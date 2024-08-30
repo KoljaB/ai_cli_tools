@@ -25,29 +25,32 @@ This project is in early alpha stage. Servers aren't stable yet, also this curre
 - Improve documentation and usage examples
 - Gather user feedback for prioritizing new features
 
-## Speech to Text (STT)
+## Tool Descriptions
+
+### Speech to Text (STT)
 
 The **STT** command transcribes speech from your microphone to text.
 
 #### Usage:
 
 - Basic: `stt` 
-  Transcribes a single line of speech.
-
 - File output: `stt > file.txt`
-  Saves transcription to a file.
-
 - Real-time mode: `stt -rt`
-  Shows transcription in real-time.
 
-#### Example:
+#### Examples:
 
 ```bash
 C:\Dev\Test\ai-cli-tools>stt
 This is detected speech.
+
+C:\Dev\Test\ai-cli-tools>stt -rt
+[Real-time transcription output]
+
+C:\Dev\Test\ai-cli-tools>stt > transcription.txt
+[Transcription saved to file]
 ```
 
-## Large Language Model (LLM)
+### Large Language Model (LLM)
 
 The **LLM** command sends queries to a Large Language Model (using LM Studio on our server).
 
@@ -57,15 +60,30 @@ The **LLM** command sends queries to a Large Language Model (using LM Studio on 
 - Piped input: `echo "your question" | llm`
 - Speech input: `stt | llm`
 - File output: `llm "your question" > answer.txt`
+- Styled output: `echo hey there | llm "answer bold"`
 
-#### Example:
+#### Examples:
 
 ```bash
 C:\Dev\Test\ai-cli-tools>llm "When was Barack Obama born?"
 Barack Obama, the 44th President of the United States, was born on August 4, 1961.
+
+C:\Dev\Test\ai-cli-tools>echo "List 5 reputable sources for information on climate change:" | llm > sources.txt
+
+C:\Dev\Test\ai-cli-tools>echo hey there | llm "answer bold"
+[Bold formatted answer]
+
+C:\Dev\Test\ai-cli-tools>echo "Write a hello world in python, only return python code" | llm > helloworld.py && python helloworld.py
+[Executes the generated Python script]
+
+C:\Dev\Test\ai-cli-tools>echo "Write Python code that: 1. Imports the necessary modules (time) 2. Defines a function to get the current time in MM:SS Format 3. Uses a loop to continuously print the time 4. Updates the display every 5 seconds using time.sleep() 5. Runs indefinitely until manually stopped." | llm "Your entire response must be only the improved Python code, with no explanations, comments, or formatting. Start your response with 'import' and end it with the last line of code. Do not include triple backticks, 'python', or any other text outside the Python code itself." > simple_clock.py && python simple_clock.py
+[Generates and runs a Python clock script]
+
+C:\Dev\Test\ai-cli-tools>type simple_clock.py | llm "Improve this Python code. Your entire response must be only the improved Python code, with no explanations, comments, or formatting. Start your response with 'import' and end it with the last line of code. Do not include triple backticks, 'python', or any other text outside the Python code itself."
+[Returns improved Python code]
 ```
 
-## Text-to-Speech (TTS)
+### Text-to-Speech (TTS)
 
 The **RVC** command synthesizes text into speech in real-time.
 
@@ -75,11 +93,35 @@ The **RVC** command synthesizes text into speech in real-time.
 - Piped input: `echo "text to speak" | rvc`
 - Full pipeline: `stt | llm | rvc`
 
-#### Example:
+#### Examples:
 
 ```bash
 C:\Dev\Test\ai-cli-tools>rvc "Let me hear this"
 Let me hear this
+
+C:\Dev\Test\ai-cli-tools>echo hey there | llm "answer bold" | rvc
+[Speaks the bold-formatted answer]
+
+C:\Dev\Test\ai-cli-tools>llm "give me a short tip for learning french" | rvc
+[Speaks a French learning tip]
+
+C:\Dev\Test\ai-cli-tools>stt | llm "translate to english, only return the translation" | rvc
+[Speaks the English translation of the transcribed speech]
+```
+
+## Advanced Usage
+
+You can combine these tools in various ways to create powerful workflows:
+
+```bash
+stt | llm | rvc
+[Transcribes speech, processes it with LLM, and speaks the result]
+
+echo hey there | llm "answer bold" | rvc
+[Processes text with LLM using a style instruction, then speaks the result]
+
+stt | llm "translate to english, only return the translation" | rvc
+[Transcribes speech, translates it to English, and speaks the translation]
 ```
 
 ## Prerequisites
