@@ -49,6 +49,7 @@ class TTSClient:
             while self.running:
                 try:
                     line = await asyncio.get_event_loop().run_in_executor(None, sys.stdin.readline)
+                    print(f"line: {line}")
                     if not line:
                         break
                     await self.handle_text(line)
@@ -56,9 +57,15 @@ class TTSClient:
                     self.debug_print(f"Error processing input: {e}")
                     break
         else:
-            # Non-interactive mode (piped input)
-            content = sys.stdin.read()
-            await self.handle_text(content)
+            while self.running:
+                try:
+                    chunk = await asyncio.get_event_loop().run_in_executor(None, sys.stdin.read, 20)
+                    if not chunk:
+                        break
+                    await self.handle_text(chunk)
+                except Exception as e:
+                    self.debug_print(f"Error processing input: {e}")
+                    break            
         
         self.debug_print("Finished processing input")
         await self.handle_end_of_input()
