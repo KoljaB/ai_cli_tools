@@ -70,8 +70,8 @@ Barack Obama, the 44th President of the United States, was born on August 4, 196
 
 C:\Dev\Test\ai-cli-tools>echo "List 5 reputable sources for information on climate change:" | llm > sources.txt
 
-C:\Dev\Test\ai-cli-tools>echo hey there | llm "answer bold"
-[Bold formatted answer]
+C:\Dev\Test\ai-cli-tools>echo hey there | llm "answer short"
+[Short answer]
 
 C:\Dev\Test\ai-cli-tools>echo "Write a hello world in python, only return python code" | llm > helloworld.py && python helloworld.py
 [Executes the generated Python script]
