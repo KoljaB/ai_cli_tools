@@ -2,6 +2,63 @@
 
 A set of command-line tools providing quick access to central AI services.
 
+## Speech to Text (STT)
+
+The **STT** command transcribes speech from your microphone to text.
+
+#### Usage:
+
+- Basic: `stt` 
+  Transcribes a single line of speech.
+
+- File output: `stt > file.txt`
+  Saves transcription to a file.
+
+- Real-time mode: `stt -rt`
+  Shows transcription in real-time.
+
+#### Example:
+
+```bash
+C:\Dev\Test\ai-cli-tools>stt
+This is detected speech.
+```
+
+## Large Language Model (LLM)
+
+The **LLM** command sends queries to a Large Language Model (using LM Studio on our server).
+
+#### Usage:
+
+- Inline query: `llm "your question here"`
+- Piped input: `echo "your question" | llm`
+- Speech input: `stt | llm`
+- File output: `llm "your question" > answer.txt`
+
+#### Example:
+
+```bash
+C:\Dev\Test\ai-cli-tools>llm "When was Barack Obama born?"
+Barack Obama, the 44th President of the United States, was born on August 4, 1961.
+```
+
+## Text-to-Speech (TTS)
+
+The **RVC** command synthesizes text into speech in real-time.
+
+#### Usage:
+
+- Inline text: `rvc "text to speak"`
+- Piped input: `echo "text to speak" | rvc`
+- Full pipeline: `stt | llm | rvc`
+
+#### Example:
+
+```bash
+C:\Dev\Test\ai-cli-tools>rvc "Let me hear this"
+Let me hear this
+```
+
 ## Installation
 
 1. **Clone the Repository**
