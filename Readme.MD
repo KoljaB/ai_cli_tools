@@ -59,12 +59,18 @@ C:\Dev\Test\ai-cli-tools>rvc "Let me hear this"
 Let me hear this
 ```
 
+## Prerequisites
+
+- Python 3.10.9
+- CUDA 12.1
+
 ## Installation
 
 1. **Clone the Repository**
 
    ```bash
    git clone https://github.com/KoljaB/ai_cli_tools.git
+   cd ai_cli_tools
    ```
 
 2. **Create a Virtual Environment**
@@ -72,7 +78,7 @@ Let me hear this
    For Windows:
 
    ```bash
-   start _create_venv.bat
+   _create_venv.bat
    ```
 
 3. **Activate the Virtual Environment**
@@ -80,7 +86,7 @@ Let me hear this
    For Windows:
 
    ```bash
-   start _start_venv.bat
+   _start_venv.bat
    ```
 
 4. **Install Dependencies**
