@@ -1,6 +1,29 @@
 # AI CLI Tools
 
-A set of command-line tools providing quick access to central AI services.
+A command-line interface for access to core AI services: speech-to-text, large language models, and text-to-speech. This toolkit offers advanced AI capabilities directly from their terminal.
+
+## Key Features
+
+- **Speech-to-Text (STT)**: Transcribe speech from your microphone to text.
+- **Large Language Model (LLM)**: Interact with powerful language models for various tasks.
+- **Text-to-Speech (TTS)**: Convert text to natural-sounding speech.
+
+## Highlights
+
+- **Remote Server Support**: All AI services can be installed on remote servers for enhanced performance and flexibility.
+- **Modular Design**: Each tool functions independently and can be combined for complex workflows.
+- **Real-time Processing**: Supports real-time transcription and speech synthesis.
+
+## Project Status
+
+This project is in early alpha stage. The current implementation offers a working prototype with opinionated, streamlined commands. While customization options are limited at this phase, the foundation is set for potential expansion into a comprehensive CLI Swiss Army knife for STT, LLM, and TTS applications.
+
+## Roadmap
+
+- Enhance customization options for each tool
+- Expand API parameter accessibility
+- Improve documentation and usage examples
+- Gather user feedback for prioritizing new features
 
 ## Speech to Text (STT)
 
