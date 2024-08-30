@@ -25,8 +25,8 @@ class TTSClient:
         self.synthesis_complete = asyncio.Event()
         self.playback_complete = asyncio.Event()
         self.shutdown_event = asyncio.Event()
-        self.synthesis_timeout = 1  # seconds
-        self.first_chunk_timeout = 7  # seconds
+        self.synthesis_timeout = 3  # seconds
+        self.first_chunk_timeout = 12  # seconds
         self.overall_timeout = 30  # seconds
         self.receive_task = None
         self.start_time = None
