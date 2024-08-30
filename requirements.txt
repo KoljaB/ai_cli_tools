@@ -1,0 +1,17 @@
+# llm server depencendies
+fastapi
+uvicorn[standard]
+
+# stt server depencendies
+realtimestt
+
+# tts server depencendies
+realtimetts[all]
+
+# rvc (realtime voice change) depencendies
+fairseq
+faiss-cpu
+praat-parselmouth
+torchcrepe
+torchfcpe
+pyworld
