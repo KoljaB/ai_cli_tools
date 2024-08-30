@@ -16,7 +16,7 @@ A command-line interface for access to core AI services: speech-to-text, large l
 
 ## Project Status
 
-This project is in early alpha stage. The current implementation offers a working prototype with opinionated, streamlined commands. While customization options are limited at this phase, the foundation is set for potential expansion into a comprehensive CLI Swiss Army knife for STT, LLM, and TTS applications.
+This project is in early alpha stage. Servers aren't stable yet, also this current implementation only offers a working prototype with opinionated, streamlined commands. While customization options are limited at this phase, the foundation is set for potential expansion into a comprehensive CLI Swiss Army knife for STT, LLM, and TTS applications.
 
 ## Roadmap
 
