@@ -1,0 +1,5 @@
+websockets
+pyaudio
+websocket-client
+colorama
+tqdm
