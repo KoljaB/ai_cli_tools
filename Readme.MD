@@ -110,16 +110,7 @@ Let me hear this
    _install_models.bat
    ```
 
-7. **Install CLI commands**
-
-   For Windows:
-
-   ```bash
-   pip install -r requirements_client.txt
-   _install_cli_commands.bat
-   ```
-
-8. **Start the servers**
+7. **Start the servers**
 
    For Windows:
 
@@ -127,4 +118,15 @@ Let me hear this
    _start_llm_server.bat
    _start_stt_server.bat
    _start_tts_server.bat
+   ```
+
+8. **Install CLI commands**
+
+   Execute this on your clients main environment, NOT in the venv.
+
+   For Windows:
+
+   ```bash
+   pip install -r requirements_client.txt
+   _install_cli_commands.bat
    ```
