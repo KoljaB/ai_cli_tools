@@ -13,6 +13,8 @@ A command-line interface for access to core AI services: speech-to-text, large l
 - **Remote Server Support**: All AI services can be installed on remote servers for enhanced performance and flexibility.
 - **Modular Design**: Each tool functions independently and can be combined for complex workflows.
 - **Real-time Processing**: Supports real-time transcription and speech synthesis.
+- **Multiple LLM Providers**: Switch between different LLM providers (LMStudio, Anthropic, OpenAI, Ollama).
+- **Customizable TTS**: Options for different TTS models and voices, including RVC support.
 
 ## Project Status
 
@@ -56,31 +58,26 @@ The **LLM** command sends queries to a Large Language Model (using LM Studio on 
 
 #### Usage:
 
-- Inline query: `llm "your question here"`
-- Piped input: `echo "your question" | llm`
+- Inline query: `llm your question here`
+- Piped input: `echo your question | llm`
 - Speech input: `stt | llm`
-- File output: `llm "your question" > answer.txt`
-- System message output: `echo hey there | llm "answer bold"`
+- File output: `llm your question > answer.txt`
+- System message output: `echo hey there | llm answer sassy`
+- Provider and model selection: `llm your question --provider [lmstudio|anthropic|openai|ollama] --model [model_name]`
 
 #### Examples:
 
 ```bash
-C:\Dev\Test\ai-cli-tools>llm "When was Barack Obama born?"
+C:\Dev\Test\ai-cli-tools>llm When was Barack Obama born?
 Barack Obama, the 44th President of the United States, was born on August 4, 1961.
 
-C:\Dev\Test\ai-cli-tools>echo "List 5 reputable sources for information on climate change:" | llm > sources.txt
+C:\Dev\Test\ai-cli-tools>echo List 5 reputable sources for information on climate change: | llm > sources.txt
 
-C:\Dev\Test\ai-cli-tools>echo hey there | llm "answer short"
-[Short answer]
+C:\Dev\Test\ai-cli-tools>llm Tell me about AI --anthropic
+[Response from Anthropic's Claude model]
 
-C:\Dev\Test\ai-cli-tools>echo "Write a hello world in python, only return python code" | llm > helloworld.py && python helloworld.py
-[Executes the generated Python script]
-
-C:\Dev\Test\ai-cli-tools>echo "Write Python code that: 1. Imports the necessary modules (time) 2. Defines a function to get the current time in MM:SS Format 3. Uses a loop to continuously print the time 4. Updates the display every 5 seconds using time.sleep() 5. Runs indefinitely until manually stopped." | llm "Your entire response must be only the improved Python code, with no explanations, comments, or formatting. Start your response with 'import' and end it with the last line of code. Do not include triple backticks, 'python', or any other text outside the Python code itself." > simple_clock.py && python simple_clock.py
-[Generates and runs a Python clock script]
-
-C:\Dev\Test\ai-cli-tools>type simple_clock.py | llm "Improve this Python code. Your entire response must be only the improved Python code, with no explanations, comments, or formatting. Start your response with 'import' and end it with the last line of code. Do not include triple backticks, 'python', or any other text outside the Python code itself."
-[Returns improved Python code]
+C:\Dev\Test\ai-cli-tools>llm Explain quantum computing --openai --model gpt-4
+[Response from OpenAI's GPT-4 model]
 ```
 
 ### Text-to-Speech (TTS)
@@ -92,21 +89,20 @@ The **TTS** command synthesizes text into speech in real-time.
 - Inline text: `tts text to speak`
 - Piped input: `echo text to speak | tts`
 - Full pipeline: `stt | llm | tts`
+- File output: `tts Hello, world! > output.wav`
+- RVC toggle: `tts Hello, world! --rvc`
 
 #### Examples:
 
 ```bash
-C:\Dev\Test\ai-cli-tools>tts "Let me hear this"
+C:\Dev\Test\ai-cli-tools>tts Let me hear this
 Let me hear this
 
-C:\Dev\Test\ai-cli-tools>echo hey there | llm "answer short" | tts
+C:\Dev\Test\ai-cli-tools>echo hey there | llm answer short | tts
 [Speaks the short answer]
 
-C:\Dev\Test\ai-cli-tools>llm "give me a short tip for learning french" | tts
-[Speaks a French learning tip]
-
-C:\Dev\Test\ai-cli-tools>stt | llm "translate to english, only return the translation" | tts
-[Speaks the English translation of the transcribed speech]
+C:\Dev\Test\ai-cli-tools>stt | llm translate to english, only return the translation | tts --rvc > translation.wav
+[Transcribes speech, translates it to English, applies RVC, and saves to file]
 ```
 
 ## Advanced Usage
@@ -114,14 +110,14 @@ C:\Dev\Test\ai-cli-tools>stt | llm "translate to english, only return the transl
 You can combine these tools in various ways to create powerful workflows:
 
 ```bash
-stt | llm | tts
-[Transcribes speech, processes it with LLM, and speaks the result]
+stt | llm --anthropic | tts --rvc
+[Transcribes speech, processes it with Anthropic's LLM, and speaks the result using RVC]
 
-echo hey there | llm "answer bold" | tts
-[Processes text with LLM using a style instruction, then speaks the result]
+echo Explain relativity | llm --openai --model gpt-4 | tts > explanation.wav
+[Processes text with OpenAI's GPT-4, then speaks and saves the result]
 
-stt | llm "translate to english, only return the translation" | tts
-[Transcribes speech, translates it to English, and speaks the translation]
+stt | llm translate to english, only return the translation | tts --xtts-voice french_voice.wav
+[Transcribes speech, translates it to English, and speaks the translation with a French voice]
 ```
 
 ## Prerequisites
@@ -156,11 +152,15 @@ stt | llm "translate to english, only return the translation" | tts
 
 4. **Install Dependencies**
 
+   Execute in that virtual environment:
+
    ```bash
    pip install -r requirements.txt
    ```
 
 5. **Upgrade PyTorch to Use GPU**
+
+   Execute in venv:
 
    ```bash
    pip install torch==2.3.1+cu121 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu121
@@ -169,25 +169,17 @@ stt | llm "translate to english, only return the translation" | tts
 
 6. **Install models for TTS and RVC**
 
+   Execute in venv or main environment:
+
    For Windows:
 
    ```bash
    _install_models.bat
    ```
 
-7. **Start the servers**
+7. **Install CLI commands**
 
-   For Windows:
-
-   ```bash
-   _start_llm_server.bat
-   _start_stt_server.bat
-   _start_tts_server.bat
-   ```
-
-8. **Install CLI commands**
-
-   Execute this on your clients main environment, NOT in the venv.
+   Execute this on your main python or on your clients environment, NOT in the virtual environment.
 
    For Windows:
 
@@ -195,3 +187,39 @@ stt | llm "translate to english, only return the translation" | tts
    pip install -r requirements_client.txt
    _install_cli_commands.bat
    ```
+
+8. **Start the servers**
+
+   Execute this on your main python or on your clients environment, NOT in the venv.
+
+   For Windows:
+
+   ```bash
+   _start_stt_server.bat
+   _start_llm_server.bat
+   _start_tts_server.bat
+   ```
+
+   or execute
+
+   ```bash
+   stt-server
+   llm-server
+   tts-server
+   ```
+
+## Environment Setup
+
+To use certain LLM providers, set the following environment variables on the server machine:
+
+- For OpenAI: `OPENAI_API_KEY`
+- For Anthropic: `ANTHROPIC_API_KEY`
+
+## Notes
+
+- You can use CTRL+C to immediately abort any command (stt, llm, tts).
+- The system will prompt to start a local server if it's not running when you try to use a command.
+- Default models: 
+  - OpenAI: gpt-4o-mini
+  - Anthropic: claude-3-sonnet-20240229
+  - Ollama: llama3.1
