@@ -37,16 +37,12 @@ The **STT** command transcribes speech from your microphone to text.
 
 - Basic: `stt` 
 - File output: `stt > file.txt`
-- Real-time mode: `stt -rt`
 
 #### Examples:
 
 ```bash
 C:\Dev\Test\ai-cli-tools>stt
 This is detected speech.
-
-C:\Dev\Test\ai-cli-tools>stt -rt
-[Real-time transcription output]
 
 C:\Dev\Test\ai-cli-tools>stt > transcription.txt
 [Transcription saved to file]
