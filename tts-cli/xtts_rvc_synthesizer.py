@@ -43,19 +43,13 @@ class XTTSRVCSynthesizer:
         self.use_logging = use_logging
         self.xtts_voice = xtts_voice
         self.engine = None
+        self.rvc_model = rvc_model
         self.rvc_sample_rate = rvc_sample_rate
         self.on_chunk = on_audio_chunk
 
         if self.use_logging:
             print("Extended logging")
 
-        self.rvc = None
-        if rvc_model is not None:
-            self.load_rvc_model(rvc_model, rvc_sample_rate)
-
-        if self.use_logging:
-            print("Loading XTTS model")
-        self.load_xtts_model(xtts_model)
 
         # Initialize PyAudio
         self.pyaudio_instance = None
@@ -63,9 +57,41 @@ class XTTSRVCSynthesizer:
         self.audio_queue = queue.Queue()
         self.playback_thread = None
         self.stop_playback = threading.Event()
+        
 
         if not self.on_chunk:
             self.pyaudio_instance = pyaudio.PyAudio()
+
+        self.rvc = None
+        if rvc_model is not None:
+            self.rvc_enabled = True
+            self.load_rvc_model(self.rvc_model, self.rvc_sample_rate)
+        else:
+            self.rvc_enabled = False
+            self.rvc_sample_rate = 24000
+
+        if self.use_logging:
+            print("Loading XTTS model")
+
+        self.load_xtts_model(xtts_model)
+
+        print("Performing warmup")
+        self.muted = True
+        self.push_text("warmup")
+        self.synthesize()
+        # self.stream.feed("warmup")
+        # self.stream.play(muted=True, on_audio_chunk=self.on_audio_chunk)
+        self.muted = False
+
+
+    def enable_rvc(self, enable):
+        self.rvc_enabled = enable
+        # if not enable:
+        #     #self.load_rvc_model(None)
+        #     self.rvc_sample_rate = 24000
+        # else:
+        #     self.load_rvc_model(self.rvc_model, self.rvc_sample_rate)
+
 
     def push_text(self, text: str):
         self.buffer.add(text)
@@ -73,25 +99,34 @@ class XTTSRVCSynthesizer:
             self.load_xtts_model()
         
         self.ensure_playing()
-        
+
+
+    def on_audio_chunk(self, chunk):
+        _, _, sample_rate = self.engine.get_stream_info()
+        if self.rvc is not None and self.rvc_enabled:
+            self.rvc.feed(chunk, sample_rate)
+        else:
+            self.audio_queue.put(chunk)
+
         
     def ensure_playing(self):
-        def on_audio_chunk(chunk):
-            _, _, sample_rate = self.engine.get_stream_info()
-            if self.rvc is not None:
-                self.rvc.feed(chunk, sample_rate)
+            # if self.on_chunk:
+            #     print("Callback CHUNK")
+            #     self.on_chunk(audio_chunk)
+            #     return            
 
         if not self.stream.is_playing():
             self.stream.feed(self.buffer.gen())
             play_params = {
                 "fast_sentence_fragment": True,
                 "log_synthesized_text": True,
-                "minimum_sentence_length": 10,
-                "minimum_first_fragment_length": 10,
+                "minimum_sentence_length": 7,
+                "minimum_first_fragment_length": 7,
                 "context_size": 4,
+                "context_size_look_overhead": 4,
                 "sentence_fragment_delimiters": ".?!;:,\n()[]{}。-""„—…/|《》¡¿\"",
                 "force_first_fragment_after_words": 9999999,
-                "on_audio_chunk": on_audio_chunk,
+                "on_audio_chunk": self.on_audio_chunk,
                 "muted": True
             }
 
@@ -114,21 +149,24 @@ class XTTSRVCSynthesizer:
                 continue
 
     def play_audio(self, audio_chunk):
-        if self.on_chunk:
-            print("Callback CHUNK")
+        if self.on_chunk and not self.muted:
+            # print("Callback CHUNK")
             self.on_chunk(audio_chunk)
             return
+        
+        if self.muted:
+            return
 
-        if self.audio_queue.qsize() == 0:
-            print("====FINISHED====")
+        # if self.audio_queue.qsize() == 0:
+        #     print("====FINISHED====")
 
         if self.audio_stream is None:
-                self.audio_stream = self.pyaudio_instance.open(
-                    format=pyaudio.paFloat32,
-                    channels=1,
-                    rate=self.rvc_sample_rate,
-                    output=True
-                )
+            self.audio_stream = self.pyaudio_instance.open(
+                format=pyaudio.paFloat32,
+                channels=1,
+                rate=self.rvc_sample_rate,
+                output=True
+            )
 
         print(f"Writing {len(audio_chunk)} into {self.rvc_sample_rate} stream")
         self.audio_stream.write(audio_chunk)
@@ -158,7 +196,7 @@ class XTTSRVCSynthesizer:
                 "language": "en",
                 "level": level,
                 "voice": voice,
-                "speed": 1.0,
+                "speed": 1.1,
                 "temperature": 0.9,
                 "repetition_penalty": 10,
                 "top_k": 70,
@@ -181,14 +219,10 @@ class XTTSRVCSynthesizer:
             self.engine = CoquiEngine(**engine_params)
 
             def on_audio_stream_stop():
-                print("FINISHED")
+                pass
+                #print("FINISHED")
 
             self.stream = TextToAudioStream(self.engine, on_audio_stream_stop=on_audio_stream_stop)
-
-            print("Performing warmup")
-            self.stream.feed("warmup")
-            self.stream.play(muted=True)
-            print("Warmup performed")
 
         else:
             if voice and len(voice) > 0:
@@ -242,6 +276,12 @@ class XTTSRVCSynthesizer:
             self.audio_stream = None
 
     def load_rvc_model(self, rvc_model: str = None, rvc_sample_rate = 40000):
+        if not rvc_model:
+            if self.rvc is None:
+                self.rvc.unload_model()
+                self.rvc = None
+                return
+
         rvc_model_name = os.path.basename(rvc_model)
         rvc_model_name = str(Path(rvc_model_name).with_suffix(''))
         rvc_model_path = os.path.dirname(rvc_model)

@@ -1,7 +1,3 @@
-# llm server depencendies
-fastapi
-uvicorn[standard]
-
 # stt server depencendies
 realtimestt
 

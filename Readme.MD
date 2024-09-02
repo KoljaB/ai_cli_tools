@@ -60,7 +60,7 @@ The **LLM** command sends queries to a Large Language Model (using LM Studio on 
 - Piped input: `echo "your question" | llm`
 - Speech input: `stt | llm`
 - File output: `llm "your question" > answer.txt`
-- Styled output: `echo hey there | llm "answer bold"`
+- System message output: `echo hey there | llm "answer bold"`
 
 #### Examples:
 
@@ -85,27 +85,27 @@ C:\Dev\Test\ai-cli-tools>type simple_clock.py | llm "Improve this Python code. Y
 
 ### Text-to-Speech (TTS)
 
-The **RVC** command synthesizes text into speech in real-time.
+The **TTS** command synthesizes text into speech in real-time.
 
 #### Usage:
 
-- Inline text: `rvc "text to speak"`
-- Piped input: `echo "text to speak" | rvc`
-- Full pipeline: `stt | llm | rvc`
+- Inline text: `tts text to speak`
+- Piped input: `echo text to speak | tts`
+- Full pipeline: `stt | llm | tts`
 
 #### Examples:
 
 ```bash
-C:\Dev\Test\ai-cli-tools>rvc "Let me hear this"
+C:\Dev\Test\ai-cli-tools>tts "Let me hear this"
 Let me hear this
 
-C:\Dev\Test\ai-cli-tools>echo hey there | llm "answer short" | rvc
+C:\Dev\Test\ai-cli-tools>echo hey there | llm "answer short" | tts
 [Speaks the short answer]
 
-C:\Dev\Test\ai-cli-tools>llm "give me a short tip for learning french" | rvc
+C:\Dev\Test\ai-cli-tools>llm "give me a short tip for learning french" | tts
 [Speaks a French learning tip]
 
-C:\Dev\Test\ai-cli-tools>stt | llm "translate to english, only return the translation" | rvc
+C:\Dev\Test\ai-cli-tools>stt | llm "translate to english, only return the translation" | tts
 [Speaks the English translation of the transcribed speech]
 ```
 
@@ -114,13 +114,13 @@ C:\Dev\Test\ai-cli-tools>stt | llm "translate to english, only return the transl
 You can combine these tools in various ways to create powerful workflows:
 
 ```bash
-stt | llm | rvc
+stt | llm | tts
 [Transcribes speech, processes it with LLM, and speaks the result]
 
-echo hey there | llm "answer bold" | rvc
+echo hey there | llm "answer bold" | tts
 [Processes text with LLM using a style instruction, then speaks the result]
 
-stt | llm "translate to english, only return the translation" | rvc
+stt | llm "translate to english, only return the translation" | tts
 [Transcribes speech, translates it to English, and speaks the translation]
 ```
 

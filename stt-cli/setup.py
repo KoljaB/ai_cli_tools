@@ -7,6 +7,7 @@ setup(
     entry_points={
         'console_scripts': [
             'stt=stt:main',
+            'stt-server=start_stt_server:main',
         ],
     },
 )

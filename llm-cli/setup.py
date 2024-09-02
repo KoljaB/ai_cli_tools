@@ -7,6 +7,7 @@ setup(
     entry_points={
         'console_scripts': [
             'llm=llm:main',
+            'llm-server=start_llm_server:main',
         ],
     },
 )
