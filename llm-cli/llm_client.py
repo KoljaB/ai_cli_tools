@@ -10,10 +10,12 @@ from datetime import datetime
 from urllib.parse import urlparse
 
 class LLMClient:
-    def __init__(self, server_url, debug=False, file_output=None):
+    def __init__(self, server_url, debug=False, file_output=None, provider='lmstudio', model=None):
         self.server_url = server_url
         self.debug = debug
         self.file_output = file_output
+        self.provider = provider
+        self.model = model
         parsed_url = urlparse(self.server_url)
         self.host = parsed_url.hostname
         self.port = parsed_url.port or 80
@@ -52,7 +54,9 @@ class LLMClient:
         self.websocket = websocket
         data = {
             "system": system_message,
-            "user": user_message
+            "user": user_message,
+            "provider": self.provider,
+            "model": self.model
         }
         self.debug_print(f"Sending: {json.dumps(data)}")
         await websocket.send(json.dumps(data))
@@ -129,14 +133,31 @@ def parse_arguments():
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
     parser.add_argument("--server", default="ws://localhost:5000", help="WebSocket server URL")
     parser.add_argument("--system", help="System message")
+    parser.add_argument("--provider", default="lmstudio", choices=["lmstudio", "openai", "anthropic", "ollama"], help="LLM provider")
+    parser.add_argument("--model", help="Specific model to use (required for OpenAI and Anthropic)")
+    parser.add_argument("--openai", action="store_true", help="Use OpenAI provider")
+    parser.add_argument("--anthropic", action="store_true", help="Use Anthropic provider")
+    parser.add_argument("--ollama", action="store_true", help="Use Ollama provider")
+    parser.add_argument("--lmstudio", action="store_true", help="Use LM Studio provider")    
     parser.add_argument("input", nargs="*", help="User message")
     return parser.parse_args()
 
 async def run_client(args):
     file_output = sys.stdout if not os.isatty(sys.stdout.fileno()) else None
     
-    client = LLMClient(args.server, args.debug, file_output)
-    
+    # Determine the provider based on the command-line arguments
+    if args.openai:
+        provider = "openai"
+    elif args.anthropic:
+        provider = "anthropic"
+    elif args.ollama:
+        provider = "ollama"
+    elif args.lmstudio:
+        provider = "lmstudio"
+    else:
+        provider = args.provider    
+    client = LLMClient(args.server, args.debug, file_output, args.provider, args.model)
+        
     try:
         if not sys.stdin.isatty():
             user_message = sys.stdin.read().strip()
