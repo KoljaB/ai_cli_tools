@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'llm=llm:main',
+            'llm=llm_client:main',
             'llm-server=start_llm_server:main',
         ],
     },

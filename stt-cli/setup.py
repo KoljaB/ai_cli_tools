@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'stt=stt:main',
+            'stt=stt_client:main',
             'stt-server=start_stt_server:main',
         ],
     },

@@ -304,4 +304,5 @@ def main():
         client.stop()
 
 if __name__ == "__main__":
+    print("whattz")
     main()

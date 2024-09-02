@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'tts=tts:main',
+            'tts=tts_client:main',
             'tts-server=start_tts_server:main',            
         ],
     },
