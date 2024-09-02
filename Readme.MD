@@ -58,7 +58,7 @@ The **LLM** command sends queries to a Large Language Model (using LM Studio on 
 - Piped input: `echo your question | llm`
 - Speech input: `stt | llm`
 - File output: `llm your question > answer.txt`
-- System message output: `echo hey there | llm answer sassy`
+- System message output: `echo your query or question | llm your system message`
 - Provider and model selection: `llm your question --provider [lmstudio|anthropic|openai|ollama] --model [model_name]`
 
 #### Examples:
